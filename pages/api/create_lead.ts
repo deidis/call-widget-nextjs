@@ -1,8 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import {v4 as uuid} from 'uuid';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from "axios";
 
 import { Lead } from '../../src/models/lead';
 import { User } from '../../src/models/user';
+
+const cloudtalkBaseUrl = "https://my.cloudtalk.io/api";
+const cloudtalkContactsEndpoint = cloudtalkBaseUrl + "/contacts/add.json";
 
 export default async function main(req:NextApiRequest, res:NextApiResponse)
 {
@@ -12,6 +15,13 @@ export default async function main(req:NextApiRequest, res:NextApiResponse)
 
     if(!user) return res.status(404).send("User not found.");
 
-    const leadId:string = uuid();
-    Lead.create();
+    await axios.put(
+        cloudtalkContactsEndpoint,
+        {
+            "name": body["name"],
+            "ContactNumber": [ { "public_number": body["phoneNumber"] } ],
+            "ContactEmail": [ { "email": body["email"] } ],
+            "ContactsTag": [ { "name": "call-widget-lead" } ]
+        }
+    )
 }
