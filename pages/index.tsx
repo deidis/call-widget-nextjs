@@ -4,7 +4,7 @@ import axios from 'axios';
 import styles from '../styles/Widget.module.css'
 import { ChangeEvent } from 'react';
 
-const regex:RegExp = /[\(\)\- ]/g;
+const regex:RegExp = /[\W\D]/g;
 var countryCode:number = 1;
 var phoneNumber:string = "";
 
