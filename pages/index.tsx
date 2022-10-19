@@ -1,8 +1,11 @@
-import type { NextPage } from 'next'
+import type { NextPage } from 'next';
+import { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 
-import styles from '../styles/Widget.module.css'
-import { ChangeEvent } from 'react';
+import "intl-tel-input/build/css/intlTelInput.css";
+import intlTelInput from "intl-tel-input";
+
+import styles from '../styles/Widget.module.css';
 
 const regex:RegExp = /[\W\D]/g;
 var countryCode:number = 1;
@@ -27,6 +30,15 @@ function onCallButtonClicked()
 }
 
 const Widget:NextPage = () => {
+    const [telInput, setTelInput] = useState(new Object());
+    useEffect(() => {
+        setTelInput(window.document.querySelector("#phone")!);
+    }, []);
+
+    intlTelInput(telInput as Element, {
+            
+    });
+
     return (
         <div className={styles.widget}>
             <div className={styles.center}>
@@ -34,7 +46,8 @@ const Widget:NextPage = () => {
                 <div className={styles.row}>
                     <button>Country</button>
                     <div style={{"width": 5}}></div>
-                    <input id="phoneNumberInput" onChange={onPhoneNumberInputChanged}/>
+                    <input id="phone" type="tel"/>
+                    {/* <input id="phoneNumberInput" onChange={onPhoneNumberInputChanged}/> */}
                 </div>
             </div>
             <div style={{"position": "relative", "height": "50%"}}></div>
