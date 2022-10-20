@@ -2,8 +2,8 @@ import type { NextPage } from 'next';
 import { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 
-import "intl-tel-input/build/css/intlTelInput.css";
-import intlTelInput from "intl-tel-input";
+import IntlTelInput from 'react-intl-tel-input';
+import 'react-intl-tel-input/dist/main.css';
 
 import styles from '../styles/Widget.module.css';
 
@@ -30,15 +30,6 @@ function onCallButtonClicked()
 }
 
 const Widget:NextPage = () => {
-    const [telInput, setTelInput] = useState(new Object());
-    useEffect(() => {
-        setTelInput(window.document.querySelector("#phone")!);
-    }, []);
-
-    intlTelInput(telInput as Element, {
-            
-    });
-
     return (
         <div className={styles.widget}>
             <div className={styles.center}>
@@ -46,7 +37,7 @@ const Widget:NextPage = () => {
                 <div className={styles.row}>
                     <button>Country</button>
                     <div style={{"width": 5}}></div>
-                    <input id="phone" type="tel"/>
+                    <IntlTelInput containerClassName="intl-tel-input" inputClassName="form-control"/>
                     {/* <input id="phoneNumberInput" onChange={onPhoneNumberInputChanged}/> */}
                 </div>
             </div>
