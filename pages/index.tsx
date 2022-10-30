@@ -2,29 +2,44 @@ import type { NextPage } from 'next';
 import { ChangeEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 
-import IntlTelInput from 'react-intl-tel-input';
-import 'react-intl-tel-input/dist/main.css';
+import PhoneInput from 'react-phone-input-2'
+import {CountryData} from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import {parsePhoneNumber, isValidPhoneNumber, PhoneNumber} from 'libphonenumber-js';
 
 import styles from '../styles/Widget.module.css';
 
-const regex:RegExp = /[\W\D]/g;
-var countryCode:number = 1;
-var phoneNumber:string = "";
+var phoneNumber:PhoneNumber | undefined;
+var valid:boolean = false;
 
-function onPhoneNumberInputChanged(event:ChangeEvent<HTMLInputElement>)
+function onPhoneNumberChanged(
+    value: string,
+    data: {} | CountryData,
+    _: ChangeEvent<HTMLInputElement>,
+    formattedValue: string)
 {
-    phoneNumber = event.target.value.trim();
+    try {
+        phoneNumber = parsePhoneNumber(formattedValue);
+        valid = isValidPhoneNumber(phoneNumber.number);
+    } catch (error) {
+        // The functions above throw errors. Catch them so they don't stop the page.
+    }
 }
 
 function onCallButtonClicked()
 {
-    var parsedNumber:string = phoneNumber.replaceAll(regex, "");
+    if(phoneNumber === undefined || !valid)
+    {
+        //TODO: Show the user that they have incorrectly entered their phone number.
+        console.error("Invalid");
+        return;
+    }
 
     axios.post(
         "/api/call",
         {
             "uid": "",
-            "phoneNumber": `+${countryCode}${parsedNumber}`
+            "phoneNumber": phoneNumber.number
         }
     );
 }
@@ -34,14 +49,21 @@ const Widget:NextPage = () => {
         <div className={styles.widget}>
             <div className={styles.center}>
                 <h1 className={styles.title}>Title</h1>
-                <div className={styles.row}>
-                    <button>Country</button>
-                    <div style={{"width": 5}}></div>
-                    <IntlTelInput containerClassName="intl-tel-input" inputClassName="form-control"/>
-                    {/* <input id="phoneNumberInput" onChange={onPhoneNumberInputChanged}/> */}
+                <div>
+                    <PhoneInput
+                        onChange={onPhoneNumberChanged}
+                        country="us"
+                        inputStyle={{
+                            color: "#000000",
+                            width: "100%"
+                        }}
+                        dropdownStyle={{
+                            color: "#000000"
+                        }}
+                    />
                 </div>
             </div>
-            <div style={{"position": "relative", "height": "50%"}}></div>
+            <div style={{"position": "relative", "height": "45%"}}></div>
             <button className={styles.call_btn} onClick={onCallButtonClicked}>Call Us</button>
             <button className={styles.close_btn}>X</button>
         </div>

@@ -47,8 +47,3 @@
     justify-content: center;
     flex-direction: column;
 }
-
-.row {
-    display: flex;
-    flex-direction: row;
-}
