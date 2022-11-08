@@ -51,24 +51,42 @@ function onCallButtonClicked()
     );
 }
 
+/**
+ * Called when the parent window sends a message to this iframe.
+ * 
+ * @param e The message from the parent window.
+ * 
+ * A message will contain a `message` key and `contents` with additional information.
+ */
+function onMessageReceived(e:MessageEvent<any>)
+{
+    var contents = e.data["contents"];
+
+    switch(e.data["message"])
+    {
+        case "init":
+            var title:string | undefined = contents["title"];
+            var buttonText:string | undefined = contents["buttonText"];
+            document.getElementById("title")!.innerHTML = title ?? "Title";
+            document.getElementById("call-button")!.innerHTML = buttonText ?? "Call Us";
+            break;
+    }
+}
+
 const Widget:NextPage = () => {
     useEffect(() => {
-        function onMessage(e:MessageEvent<any>)
-        {
-            console.log(e);
-        }
-
-        window.addEventListener("message", onMessage);
+        window.addEventListener("message", onMessageReceived);
+        window.parent.postMessage("done", "*");
 
         return () => {
-            window.removeEventListener("message", onMessage);
+            window.removeEventListener("message", onMessageReceived);
         }
     });
 
     return (
         <div className={styles.widget}>
             <div className={styles.center}>
-                <h1 className={styles.title}>Title</h1>
+                <h1 id="title" className={styles.title}>Title</h1>
                 <div>
                     <PhoneInput
                         onChange={(_, country, __, formattedValue) => validatePhoneNumber(formattedValue, country)}
@@ -86,7 +104,7 @@ const Widget:NextPage = () => {
             </div>
             <p id="error" className={styles.error_text}></p>
             <div style={{"height": "100%"}}></div>
-            <button className={styles.call_btn} onClick={onCallButtonClicked}>Call Us</button>
+            <button id="call-button" className={styles.call_btn} onClick={onCallButtonClicked}>Call Us</button>
             <button className={styles.close_btn}>X</button>
         </div>
     );
