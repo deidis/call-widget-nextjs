@@ -7,6 +7,7 @@ import 'react-phone-input-2/lib/style.css'
 import {parsePhoneNumber, isValidPhoneNumber, PhoneNumber, CountryCode} from 'libphonenumber-js';
 
 import styles from '../styles/Widget.module.css';
+import { useEffect } from 'react';
 
 var phoneNumber:PhoneNumber | undefined;
 var valid:boolean = false;
@@ -51,13 +52,26 @@ function onCallButtonClicked()
 }
 
 const Widget:NextPage = () => {
+    useEffect(() => {
+        function onMessage(e:MessageEvent<any>)
+        {
+            console.log(e);
+        }
+
+        window.addEventListener("message", onMessage);
+
+        return () => {
+            window.removeEventListener("message", onMessage);
+        }
+    });
+
     return (
         <div className={styles.widget}>
             <div className={styles.center}>
                 <h1 className={styles.title}>Title</h1>
                 <div>
                     <PhoneInput
-                        onChange={(_, country, ___, formattedValue) => validatePhoneNumber(formattedValue, country)}
+                        onChange={(_, country, __, formattedValue) => validatePhoneNumber(formattedValue, country)}
                         country="us"
                         countryCodeEditable={false}
                         inputStyle={{

@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <script>
+            function onClick()
+            {
+                var iframe = document.getElementById("iframe");
+                iframe.contentWindow.postMessage("clicked", "*");
+            }
+        </script>
+    </head>
+    <body>
+        <iframe id="iframe" src="http://127.0.0.1:3000" width="100%" height="98%"></iframe>
+        <button onclick="onClick()">Click Me</button>
+    </body>
+</html>
