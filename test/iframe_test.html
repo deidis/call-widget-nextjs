@@ -5,14 +5,10 @@
             window.onload = () => {
                 initCallWidget("Test", "TEsting");
             };
-
-            function onClick()
-            {
-                openCallWidget();
-            }
         </script>
     </head>
     <body>
-        <button onclick="onClick()">Click Me</button>
+        <button onclick="openCallWidget()">Open</button>
+        <button onclick="closeCallWidget()">Close</button>
     </body>
 </html>

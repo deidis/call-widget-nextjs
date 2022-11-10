@@ -51,6 +51,16 @@ function onCallButtonClicked()
     );
 }
 
+function onCloseButtonClicked()
+{
+    // Send a message to parent of this IFrame
+    // to tell it that it is supposed to close.
+    window.parent.postMessage({
+        "message": "openState",
+        "contents": false
+    }, "*");
+}
+
 /**
  * Called when the parent window sends a message to this iframe.
  * 
@@ -105,7 +115,7 @@ const Widget:NextPage = () => {
             <p id="error" className={styles.error_text}></p>
             <div style={{"height": "100%"}}></div>
             <button id="call-button" className={styles.call_btn} onClick={onCallButtonClicked}>Call Us</button>
-            <button className={styles.close_btn}>X</button>
+            <button className={styles.close_btn} onClick={onCloseButtonClicked}>X</button>
         </div>
     );
 };

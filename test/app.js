@@ -1,5 +1,8 @@
 const iframeId = "callWidgetIFrame";
+const overlayId = "callWidgetOverlay";
 const iframeUrl = "http://localhost:3000";
+
+var isOpen = true;
 
 /**
  * Initializes the call widget by adding an IFrame element to the body
@@ -21,21 +24,43 @@ function initCallWidget(title, buttonText)
     iframe.style.left = "50%";
     iframe.style.transform = "translate(-50%, -50%)";
 
-    document.body.appendChild(iframe);
+    var overlay = document.createElement("div");
+    overlay.id = overlayId;
+    overlay.style.position = "absolute";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.right = "0";
+    overlay.style.bottom = "0";
+    overlay.style.height = "100%";
+    overlay.style.width = "100%";
+    overlay.style.backgroundColor = "rgba(0, 0, 0, .5)";
+    overlay.onclick = () => closeCallWidget();
+
+    overlay.appendChild(iframe);
+
+    document.body.appendChild(overlay);
 
     function onMessage(e)
     {
         if(e.origin !== iframeUrl) return;
 
-        iframe.contentWindow.postMessage({
-            "message": "init",
-            "contents": {
-                "title": title,
-                "buttonText": buttonText
-            }
-        }, "*");
+        if(e.data == "done")
+        {
+            iframe.contentWindow.postMessage({
+                "message": "init",
+                "contents": {
+                    "title": title,
+                    "buttonText": buttonText
+                }
+            }, "*");
+            return;
+        }
+        else if(e.data["message"] == "openState")
+        {
+            isOpen = e.data["contents"];
 
-        window.removeEventListener("message", onMessage);
+            if(!isOpen) closeCallWidget();
+        }
     }
 
     window.addEventListener("message", onMessage);
@@ -43,10 +68,12 @@ function initCallWidget(title, buttonText)
 
 function openCallWidget()
 {
-    
+    var overlay = document.getElementById(overlayId);
+    overlay.style.display = "block";
 }
 
 function closeCallWidget()
 {
-
+    var overlay = document.getElementById(overlayId);
+    overlay.style.display = "none";
 }
