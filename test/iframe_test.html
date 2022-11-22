@@ -1,14 +1,16 @@
 <html>
     <head>
-        <script src="./app.js"></script>
         <script>
-            window.onload = () => {
-                initCallWidget("Test", "TEsting");
-            };
+            function onCallWidgetReady(widget)
+            {
+                widget.init("TITLE", "BUTTON")
+            }
         </script>
     </head>
     <body>
         <button onclick="openCallWidget()">Open</button>
         <button onclick="closeCallWidget()">Close</button>
     </body>
+
+    <script src="./app.js"></script>
 </html>
