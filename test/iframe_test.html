@@ -1,15 +1,18 @@
 <html>
     <head>
         <script>
-            function onCallWidgetReady(widget)
+            var widget;
+
+            function onCallWidgetReady(w)
             {
+                widget = w;
                 widget.init("TITLE", "BUTTON")
             }
         </script>
     </head>
     <body>
-        <button onclick="openCallWidget()">Open</button>
-        <button onclick="closeCallWidget()">Close</button>
+        <button onclick="widget.openCallWidget()">Open</button>
+        <button onclick="widget.closeCallWidget()">Close</button>
     </body>
 
     <script src="./app.js"></script>

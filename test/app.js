@@ -5,6 +5,8 @@ const iframeUrl = "http://localhost:3000";
 class CallWidget
 {
     isOpen = true;
+    title = "Title";
+    buttonText = "Call Us";
 
     /**
      * Initializes the call widget by adding an IFrame element to the body
@@ -15,6 +17,9 @@ class CallWidget
      */
     init(title, buttonText)
     {
+        this.title = title;
+        this.buttonText = buttonText;
+
         var iframe = document.createElement("iframe");
         iframe.id = iframeId;
         iframe.src = iframeUrl;
@@ -36,36 +41,40 @@ class CallWidget
         overlay.style.height = "100%";
         overlay.style.width = "100%";
         overlay.style.backgroundColor = "rgba(0, 0, 0, .5)";
-        overlay.onclick = () => closeCallWidget();
+        overlay.onclick = () => this.closeCallWidget();
 
         overlay.appendChild(iframe);
-
         document.body.appendChild(overlay);
 
-        function onMessage(e)
+        window.addEventListener("message", this.onMessage);
+    }
+
+    onMessage(e)
+    {
+        if(e.origin !== iframeUrl) return;
+
+        if(e.data == "done")
         {
-            if(e.origin !== iframeUrl) return;
+            let iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage({
+                "message": "init",
+                "contents": {
+                    "title": this.title,
+                    "buttonText": this.buttonText
+                }
+            }, "*");
+            return;
+        }
+        else if(e.data["message"] == "openState")
+        {
+            this.isOpen = e.data["contents"];
 
-            if(e.data == "done")
+            if(!this.isOpen)
             {
-                iframe.contentWindow.postMessage({
-                    "message": "init",
-                    "contents": {
-                        "title": title,
-                        "buttonText": buttonText
-                    }
-                }, "*");
-                return;
-            }
-            else if(e.data["message"] == "openState")
-            {
-                isOpen = e.data["contents"];
-
-                if(!isOpen) closeCallWidget();
+                var overlay = document.getElementById(overlayId);
+                overlay.style.display = "none";
             }
         }
-
-        window.addEventListener("message", onMessage);
     }
 
     openCallWidget()
