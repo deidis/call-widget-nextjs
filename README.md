@@ -15,17 +15,17 @@ There is an example provided here.
 
 ## widget.js API
 
-### onCallWidgetReady(widget:CallWidget)
+### onCallWidgetReady(widget)
 Called by ``widget.js`` when it is ready to be initialized.
 
-``widget`` A new CallWidget object that you can use to control the widget.
+``widget:CallWidget`` A new CallWidget object that you can use to control the widget.
 
-### init(title:string, buttonText:string)
+### init(title, buttonText)
 Creates the iframe and overlay elements and adds them to the DOM.
 
-``title`` The text to be used in the title text element of the widget.
+``title:string`` The text to be used in the title text element of the widget.
 
-``buttonText`` The text to be used in the button to initiate a call.
+``buttonText:string`` The text to be used in the button to initiate a call.
 
 ### openCallWidget()
 Sets the display style of the widget to ``block``.
