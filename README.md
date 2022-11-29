@@ -11,7 +11,7 @@ provided in the ``widget.js`` file.
   - This function passes a new ``CallWidget`` object in the parameter.
 - Store the object in a variable and initialize the widget.
 
-There is an example provided here.
+There is an example provided [here](https://github.com/deidis/call-widget-nextjs/tree/main/example).
 
 ## widget.js API
 
